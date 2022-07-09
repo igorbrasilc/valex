@@ -3,36 +3,17 @@ import * as employeeRepository from "../repositories/employeeRepository.js";
 import * as companyRepository from "../repositories/companyRepository.js";
 import dayjs, { Dayjs } from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import { faker } from '@faker-js/faker';
+import Cryptr from 'cryptr';
+import 'dotenv/config';
 
+const cryptr = new Cryptr(process.env.ENCRYPT_KEY);
 dayjs.extend(customParseFormat);
 
 export async function checkIfCardExistsAndIsUnactiveAndExpirationDate(cardId: number) {
-    const card = await cardRepository.findById(cardId);
-
-    if (!card) {
-        throw {
-            type: 'notFound',
-            message: 'Card not found'
-        }
-    }
-
-    if (card.password !== null) {
-        throw {
-            type: 'conflict',
-            message: 'Card already activated'
-        }
-    }
-    
-    const dateDb = dayjs(card.expirationDate, 'MM/YY').format('MM/YY');
-    const dateNow = dayjs().format('MM/YY');
-    const dateNowIsBeforeExpirationDate = dayjs(dateNow).isBefore(dateDb);
-
-    if (!dateNowIsBeforeExpirationDate) {
-        throw {
-            type: 'notAllowed',
-            message: 'This card already expired'
-        }
-    }
+    const card = await checkIfCardExistsAndReturnCard(cardId);
+    checkIfCardIsActive(card.password);
+    checkExpirationDate(card.expirationDate);
 
     return card;
 }
@@ -60,4 +41,86 @@ export async function checkIfEmployeeExistsAndIfTypeIsntTaken(employeeId: number
     }
 
     return employee;
+}
+
+export async function checkIfCardExistsAndReturnCard(cardId: number) {
+    const card = await cardRepository.findById(cardId);
+
+    if (!card) {
+        throw {
+            type: 'notFound',
+            message: 'Card not found'
+        }
+    }
+
+     return card;
+}
+
+export function checkIfCardIsActive(cardPassword: string) {
+    if (cardPassword !== null) {
+        throw {
+            type: 'conflict',
+            message: 'Card already activated'
+        }
+    }
+}
+
+export function checkExpirationDate(cardExpirationDate: string) {
+    const dateDb = dayjs(cardExpirationDate, 'MM/YY').format('MM/YY');
+    const dateNow = dayjs().format('MM/YY');
+    const dateNowIsBeforeExpirationDate = dayjs(dateNow).isBefore(dateDb);
+
+    if (!dateNowIsBeforeExpirationDate) {
+        throw {
+            type: 'notAllowed',
+            message: 'This card already expired'
+        }
+    }
+}
+
+export function formatEmployeeName(employeeName: string) {
+    const nameSplitted = employeeName.split(' ');
+    const nameFormatted = nameSplitted.map((partOfName, idx) => {
+        if (idx === 0 || idx === nameSplitted.length - 1) {
+            return partOfName.toUpperCase()
+        } else {
+            if (partOfName.length > 3) return partOfName[0].toUpperCase();
+            else return '';
+        }
+    }).join(' ');
+
+    return nameFormatted;
+}
+
+export function generateCardData(employee: employeeRepository.Employee, type: cardRepository.TransactionTypes) {
+    const employeeNameFormatted = formatEmployeeName(employee.fullName);
+    const randomCardNumber = faker.finance.creditCardNumber();
+    const dateFromNow = dayjs().add(5, 'year').format('MM/YY');
+    const uncryptedCVCGen = faker.finance.creditCardCVV();
+    const encryptedCVC = cryptr.encrypt(uncryptedCVCGen);
+    // const decryptedCVC = cryptr.decrypt(encryptedCVC);
+
+    return {
+        employeeId: employee.id,
+        number: randomCardNumber,
+        cardholderName: employeeNameFormatted,
+        securityCode: encryptedCVC,
+        expirationDate: dateFromNow,
+        isVirtual: true,
+        isBlocked: false,
+        type: type
+    }
+}
+
+export function checkIfCVCIsTheSame(CVCFromDb: string, CVCInformed: string) {
+    const decryptedCVC = cryptr.decrypt(CVCFromDb);
+
+    if (decryptedCVC !== CVCInformed) {
+        throw {
+            type: 'unauthorized',
+            message: 'CVC informed doesnt match the one saved for this account'
+        }
+    }
+
+    return true;
 }

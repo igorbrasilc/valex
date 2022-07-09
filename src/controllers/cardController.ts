@@ -19,3 +19,12 @@ export async function createCardPassword(req: Request, res: Response) {
 
     res.sendStatus(200);
 }
+
+export async function blockCard(req: Request, res: Response) {
+    const {password, cardId} 
+    : {password: string, cardId: number} = req.body;
+
+    await services.blockCard(password, cardId);
+
+    res.sendStatus(200);
+}

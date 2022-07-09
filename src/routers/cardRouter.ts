@@ -9,10 +9,14 @@ const cardRouter = Router();
 cardRouter.post('/new-card', 
     [middleware.validateHeader, validateSchema(schemas.typeSchema)], 
     controllers.createCard);
-    
+
 cardRouter.put('/activate-card', 
     validateSchema(schemas.activateCardSchema), 
     controllers.createCardPassword);
+
+    //ainda não fiz a visualização de saldo e transações
+
+// cardRouter.put('/block-card', validateSchema(schemas.blockCardSchema), )
 
 export default cardRouter;
 
