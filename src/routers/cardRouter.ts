@@ -9,6 +9,10 @@ const cardRouter = Router();
 cardRouter.post('/new-card', 
     [middleware.validateHeader, validateSchema(schemas.typeSchema)], 
     controllers.createCard);
+    
+cardRouter.put('/activate-card', 
+    validateSchema(schemas.activateCardSchema), 
+    controllers.createCardPassword);
 
 export default cardRouter;
 

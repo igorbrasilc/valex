@@ -113,7 +113,7 @@ export async function update(id: number, cardData: CardUpdateData) {
     `
     UPDATE cards
       SET ${cardColumns}
-    WHERE $1=id
+    WHERE id=$1
   `,
     [id, ...cardValues]
   );

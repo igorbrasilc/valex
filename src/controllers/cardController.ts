@@ -10,3 +10,12 @@ export async function createCard(req: Request, res: Response) {
 
     res.status(201).send(card);
 }
+
+export async function createCardPassword(req: Request, res: Response) {
+    const {password, cardId, securityCodeCVC} 
+    : {password: string, cardId: number, securityCodeCVC: string} = req.body;
+
+    await services.updateCardPassword(password, cardId, securityCodeCVC);
+
+    res.sendStatus(200);
+}
