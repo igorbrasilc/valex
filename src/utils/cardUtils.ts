@@ -57,7 +57,7 @@ export async function checkIfCardExistsAndReturnCard(cardId: number) {
      return card;
 }
 
-export function checkIfCardIsActive(cardPassword: string | undefined, intention: 'toRecharge' | 'toActivate') {
+export function checkIfCardIsActive(cardPassword: string | undefined, intention: 'toRecharge' | 'toActivate' | 'toBuy') {
 
     if (intention === 'toActivate') {
         if (cardPassword !== null) {
@@ -69,10 +69,19 @@ export function checkIfCardIsActive(cardPassword: string | undefined, intention:
     }
 
     if (intention === 'toRecharge') {
-        if (cardPassword === null) {
+        if (!cardPassword) {
             throw {
                 type: 'notAllowed',
                 message: 'Card needs to be active to be recharged'
+            }
+        }
+    }
+
+    if (intention === 'toBuy') {
+        if (!cardPassword) {
+            throw {
+                type: 'notAllowed',
+                message: 'Card needs to be active to buy at a point sale'
             }
         }
     }
@@ -142,7 +151,7 @@ export function checkIfCardIsBlocked(cardIsBlocked: boolean) {
     if (cardIsBlocked) {
         throw {
             type: 'notAllowed',
-            message: 'Card is already blocked'
+            message: 'Card is blocked, you cant buy with or block an already blocked card'
         }
     }
 }
@@ -160,8 +169,8 @@ export function hashPassword(userPassword: string, salt: number) {
     return bcrypt.hashSync(userPassword, salt);
 }
 
-export function unhashAndComparePasswords(userPassword: string, hashedPassword: string) {
-    if (hashedPassword === null) {
+export function unhashAndComparePasswords(userPassword: string, hashedPassword: string | undefined) {
+    if (!hashedPassword) {
         throw {
             type: 'notAllowed',
             message: 'Password was not created for this card yet'

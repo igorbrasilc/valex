@@ -6,6 +6,6 @@ import validateSchema from '../middlewares/validateSchema.js';
 
 const rechargeRouter = Router();
 
-rechargeRouter.post('/recharge', [validateHeader, validateSchema(schemas.rechargeSchema)], controllers.rechargeCard)
+rechargeRouter.post('/recharge', [validateHeader, validateSchema(schemas.rechargeSchema)], controllers.rechargeCard);
 
 export default rechargeRouter;
