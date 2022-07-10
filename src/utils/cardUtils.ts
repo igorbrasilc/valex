@@ -5,6 +5,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import { faker } from '@faker-js/faker';
 import Cryptr from 'cryptr';
+import bcrypt from 'bcrypt';
 import 'dotenv/config';
 
 const cryptr = new Cryptr(process.env.ENCRYPT_KEY);
@@ -123,4 +124,35 @@ export function checkIfCVCIsTheSame(CVCFromDb: string, CVCInformed: string) {
     }
 
     return true;
+}
+
+export function checkIfCardIsBlocked(cardIsBlocked: boolean) {
+    if (cardIsBlocked) {
+        throw {
+            type: 'notAllowed',
+            message: 'Card is already blocked'
+        }
+    }
+}
+
+export function hashPassword(userPassword: string, salt: number) {
+    return bcrypt.hashSync(userPassword, salt);
+}
+
+export function unhashAndComparePasswords(userPassword: string, hashedPassword: string) {
+    if (hashedPassword === null) {
+        throw {
+            type: 'notAllowed',
+            message: 'Password was not created for this card yet'
+        }
+    }
+
+    const comparison = bcrypt.compareSync(userPassword, hashedPassword);
+
+    if (!comparison) {
+        throw {
+            type: 'unauthorized',
+            message: 'Passwords do not match'
+        }
+    }
 }

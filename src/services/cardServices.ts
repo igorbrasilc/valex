@@ -18,10 +18,14 @@ createCard(
 export async function updateCardPassword(unhashedPassword: string, cardId: number, securityCodeCVC: string) {
     const card = await cardUtils.checkIfCardExistsAndIsUnactiveAndExpirationDate(cardId);
     cardUtils.checkIfCVCIsTheSame(card.securityCode, securityCodeCVC);
-    const hashedPassword = bcrypt.hashSync(unhashedPassword, 10);
+    const hashedPassword = cardUtils.hashPassword(unhashedPassword, 10);
     await cardRepository.update(cardId, {password: hashedPassword});
 }
 
-export async function blockCard(unhashedPassword: string, cardId: number) {
-
+export async function blockCard(userPassword: string, cardId: number) {
+    const card = await cardUtils.checkIfCardExistsAndReturnCard(cardId);
+    cardUtils.checkExpirationDate(card.expirationDate);
+    cardUtils.checkIfCardIsBlocked(card.isBlocked);
+    cardUtils.unhashAndComparePasswords(userPassword, card.password);
+    cardRepository.update(cardId, { isBlocked: true });
 }
