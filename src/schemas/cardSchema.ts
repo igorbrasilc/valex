@@ -11,7 +11,7 @@ export const activateCardSchema: Schema = Joi.object({
     securityCodeCVC: Joi.string().length(3).pattern(/^[0-9]{3}$/).required()
 })
 
-export const blockCardSchema: Schema = Joi.object({
+export const blockOrUnblockCardSchema: Schema = Joi.object({
     password: Joi.string().length(4).pattern(/^[0-9]{4}$/).required(),
     cardId: Joi.number().integer().required()
 })

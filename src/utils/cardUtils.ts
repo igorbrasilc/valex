@@ -135,6 +135,15 @@ export function checkIfCardIsBlocked(cardIsBlocked: boolean) {
     }
 }
 
+export function checkIfCardIsUnblocked(cardIsBlocked: boolean) {
+    if (!cardIsBlocked) {
+        throw {
+            type: 'notAllowed',
+            message: 'Card is already unblocked'
+        }
+    }
+}
+
 export function hashPassword(userPassword: string, salt: number) {
     return bcrypt.hashSync(userPassword, salt);
 }

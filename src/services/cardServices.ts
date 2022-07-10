@@ -24,8 +24,17 @@ export async function updateCardPassword(unhashedPassword: string, cardId: numbe
 
 export async function blockCard(userPassword: string, cardId: number) {
     const card = await cardUtils.checkIfCardExistsAndReturnCard(cardId);
+    cardUtils.unhashAndComparePasswords(userPassword, card.password);
     cardUtils.checkExpirationDate(card.expirationDate);
     cardUtils.checkIfCardIsBlocked(card.isBlocked);
-    cardUtils.unhashAndComparePasswords(userPassword, card.password);
     cardRepository.update(cardId, { isBlocked: true });
 }
+
+export async function unblockCard(userPassword: string, cardId: number) {
+    const card = await cardUtils.checkIfCardExistsAndReturnCard(cardId);
+    cardUtils.unhashAndComparePasswords(userPassword, card.password);
+    cardUtils.checkExpirationDate(card.expirationDate);
+    cardUtils.checkIfCardIsUnblocked(card.isBlocked);
+    cardRepository.update(cardId, { isBlocked: false });
+}
+

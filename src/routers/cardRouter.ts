@@ -16,7 +16,8 @@ cardRouter.put('/activate-card',
 
     //ainda não fiz a visualização de saldo e transações
 
-cardRouter.put('/block-card', validateSchema(schemas.blockCardSchema), controllers.blockCard);
+cardRouter.put('/block-card', validateSchema(schemas.blockOrUnblockCardSchema), controllers.blockCard);
+cardRouter.put('/unblock-card', validateSchema(schemas.blockOrUnblockCardSchema), controllers.unblockCard);
 
 export default cardRouter;
 
