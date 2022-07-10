@@ -1,8 +1,6 @@
 import * as cardRepository from "../repositories/cardRepository.js";
 import * as companyRepository from "../repositories/companyRepository.js";
-import * as employeeRepository from "../repositories/employeeRepository.js";
 import * as cardUtils from '../utils/cardUtils.js';
-import bcrypt from 'bcrypt';
 
 export async function 
 createCard(

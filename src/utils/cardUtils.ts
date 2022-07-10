@@ -13,7 +13,7 @@ dayjs.extend(customParseFormat);
 
 export async function checkIfCardExistsAndIsUnactiveAndExpirationDate(cardId: number) {
     const card = await checkIfCardExistsAndReturnCard(cardId);
-    checkIfCardIsActive(card.password);
+    checkIfCardIsActive(card.password, 'toActivate');
     checkExpirationDate(card.expirationDate);
 
     return card;
@@ -47,7 +47,7 @@ export async function checkIfEmployeeExistsAndIfTypeIsntTaken(employeeId: number
 export async function checkIfCardExistsAndReturnCard(cardId: number) {
     const card = await cardRepository.findById(cardId);
 
-    if (!card) {
+    if (card === undefined) {
         throw {
             type: 'notFound',
             message: 'Card not found'
@@ -57,11 +57,23 @@ export async function checkIfCardExistsAndReturnCard(cardId: number) {
      return card;
 }
 
-export function checkIfCardIsActive(cardPassword: string) {
-    if (cardPassword !== null) {
-        throw {
-            type: 'conflict',
-            message: 'Card already activated'
+export function checkIfCardIsActive(cardPassword: string | undefined, intention: 'toRecharge' | 'toActivate') {
+
+    if (intention === 'toActivate') {
+        if (cardPassword !== null) {
+            throw {
+                type: 'conflict',
+                message: 'Card already activated'
+            }
+        }
+    }
+
+    if (intention === 'toRecharge') {
+        if (cardPassword === null) {
+            throw {
+                type: 'notAllowed',
+                message: 'Card needs to be active to be recharged'
+            }
         }
     }
 }
