@@ -14,5 +14,5 @@ app.use(errorHandling);
 
 // const port: number = +process.env.PORT || 4000;
 app.listen(process.env.PORT, () => {
-    console.log(`Running on http://localhost:${port}`);
+    console.log(`Running on http://localhost:${process.env.PORT}`);
 });
