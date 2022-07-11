@@ -16,3 +16,7 @@ export const blockOrUnblockCardSchema: Schema = Joi.object({
     cardId: Joi.number().integer().required()
 })
 
+export const cardBalanceSchema: Schema = Joi.object({
+    cardId: Joi.number().integer().required()
+})
+

@@ -1,6 +1,7 @@
 import * as cardRepository from "../repositories/cardRepository.js";
 import * as companyRepository from "../repositories/companyRepository.js";
 import * as cardUtils from '../utils/cardUtils.js';
+import * as shoppingUtils from '../utils/shoppingUtils.js';
 
 export async function 
 createCard(
@@ -34,5 +35,18 @@ export async function unblockCard(userPassword: string, cardId: number) {
     cardUtils.checkExpirationDate(card.expirationDate);
     cardUtils.checkIfCardIsUnblocked(card.isBlocked);
     cardRepository.update(cardId, { isBlocked: false });
+}
+
+export async function getBalanceAndTransactions(cardId: number) {
+    const card = await cardUtils.checkIfCardExistsAndReturnCard(cardId);
+    const balance = await shoppingUtils.getBalanceOfCardFromTransactions(cardId);
+    const payments = await shoppingUtils.getPaymentsFromCard(cardId, 'getTransactions');
+    const recharges = await shoppingUtils.getRechargesFromCard(cardId, 'getTransactions');
+
+    return {
+        balance,
+        transactions: payments,
+        recharges
+    }
 }
 

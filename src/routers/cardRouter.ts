@@ -13,8 +13,7 @@ cardRouter.post('/new-card',
 cardRouter.put('/activate-card', 
     validateSchema(schemas.activateCardSchema), 
     controllers.createCardPassword);
-
-    //ainda não fiz a visualização de saldo e transações
+cardRouter.get('/card-balance', validateSchema(schemas.cardBalanceSchema), controllers.getCardBalance)
 
 cardRouter.put('/block-card', validateSchema(schemas.blockOrUnblockCardSchema), controllers.blockCard);
 cardRouter.put('/unblock-card', validateSchema(schemas.blockOrUnblockCardSchema), controllers.unblockCard);
