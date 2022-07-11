@@ -3,7 +3,7 @@ import * as employeeRepository from "../repositories/employeeRepository.js";
 import * as companyRepository from "../repositories/companyRepository.js";
 import dayjs, { Dayjs } from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
-import * as faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import Cryptr from 'cryptr';
 import bcrypt from 'bcrypt';
 import 'dotenv/config';
