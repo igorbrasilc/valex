@@ -12,7 +12,7 @@ app.use(cors());
 app.use(router);
 app.use(errorHandling);
 
-const port: number = +process.env.PORT || 4000;
-app.listen(port, process.env.HOST, () => {
+// const port: number = +process.env.PORT || 4000;
+app.listen(process.env.PORT, () => {
     console.log(`Running on http://localhost:${port}`);
 });
