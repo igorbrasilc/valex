@@ -13,6 +13,7 @@
     "author": "Igor C. Brasil",
     "license": "ISC",
     "dependencies": {
+        "@faker-js/faker": "^7.3.0",
         "@types/axios": "^0.14.0",
         "@types/bcrypt": "^5.0.0",
         "@types/cors": "^2.8.12",
@@ -34,7 +35,6 @@
         "pg-pool": "^3.5.1"
     },
     "devDependencies": {
-        "@faker-js/faker": "^7.3.0",
         "@types/cryptr": "^4.0.1",
         "nodemon": "^2.0.19",
         "ts-node": "^10.8.2",
